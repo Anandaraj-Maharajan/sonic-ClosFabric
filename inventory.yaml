@@ -1,0 +1,15 @@
+Leaf1A  ansible_host=192.168.1.101
+Leaf1B  ansible_host=192.168.1.102
+
+Spine1  ansible_host=192.168.1.103
+
+[leaf]
+Leaf1A
+Leaf1B
+
+[spine]
+Spine1
+
+[fabric:children]
+leaf
+spine

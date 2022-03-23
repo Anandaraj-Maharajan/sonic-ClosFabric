@@ -1,0 +1,13 @@
+---
+# tasks file for common
+- name: configure host name
+  sonic_system:
+    config:
+      hostname: '{{hostname}}'
+
+
+- name: "Configure SNMP community for SONiC device along with 'save'"
+  connection: network_cli
+  sonic_config:
+    commands: ['snmp-server community dellcommunity group ro']
+    save: yes

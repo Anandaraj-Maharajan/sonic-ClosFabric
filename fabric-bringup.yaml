@@ -1,0 +1,7 @@
+---
+- name: Configure common parameters of the fabric
+  hosts: fabric
+  gather_facts: False
+  connection: httpapi
+  roles: 
+    - common
