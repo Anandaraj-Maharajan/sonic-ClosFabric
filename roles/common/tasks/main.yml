@@ -11,3 +11,11 @@
   sonic_config:
     commands: ['snmp-server community dellcommunity group ro']
     save: yes
+
+- name: "Enable LLDP to advertise TLV with hostname"    
+  connection: network_cli
+  sonic_config:
+    commands:
+      - 'lldp enable'
+      - 'lldp system-name {{ hostname }}'
+    save: yes

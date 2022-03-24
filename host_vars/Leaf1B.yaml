@@ -1,1 +1,14 @@
 hostname        : 'Leaf1B'
+bgp_asn         : '65500'      
+
+loopbacks:
+  - name: Loopback0
+    ip: '10.1.1.2'
+    description: 'BGP Router ID'
+  - name: Loopback1
+    ip: '172.16.1.2'
+    description: 'VTEP IP'  
+
+uplinks:
+  - Ethernet0
+  - Ethernet1

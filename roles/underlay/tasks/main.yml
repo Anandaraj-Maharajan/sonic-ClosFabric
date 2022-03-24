@@ -1,0 +1,134 @@
+---
+# tasks file for underlay
+- name: Configure Loopback interfaces
+  sonic_interfaces:
+    config:
+      - name: "{{ item['name'] }}"
+        description: "{{ item['description'] }}"
+    state: merged
+  loop: "{{loopbacks}}"
+
+- name: Configure Loopback IP addresses
+  sonic_l3_interfaces:
+    config:
+      - name: "{{ item['name'] }}"
+        ipv4:
+          addresses:
+            - address: "{{item['ip']}}{{loopback_mask}}"
+    state: merged
+  loop: "{{loopbacks}}"
+
+- name: Bringup Spine connected uplink interfaces   
+  sonic_interfaces:
+    config:
+      - name: "{{ item }}"
+        enabled: true
+    state: merged
+  loop: "{{uplinks}}"  
+  when: "'leaf' in group_names"  
+
+- name: Enable IPv6 link local on the uplink interfaces
+  sonic_l3_interfaces:
+    config:
+      - name: "{{ item }}"
+        ipv6:
+          enabled: true
+    state: merged
+  loop: "{{uplinks}}"
+  when: "'leaf' in group_names"  
+
+- name: Bringup Leaf connected downlink interfaces   
+  sonic_interfaces:
+    config:
+      - name: "{{ item }}"
+        enabled: true
+    state: merged
+  loop: "{{downlinks}}"  
+  when: "'spine' in group_names"  
+
+- name: Enable IPv6 link local on the downlink interfaces
+  sonic_l3_interfaces:
+    config:
+      - name: "{{ item }}"
+        ipv6:
+          enabled: true
+    state: merged
+  loop: "{{downlinks}}"  
+  when: "'spine' in group_names"  
+
+
+- name: "Enable BGP"
+  sonic_bgp:
+    config:
+      - bgp_as: "{{bgp_asn}}"
+        router_id: "{{loopbacks[0]['ip']}}"
+        log_neighbor_changes: False
+
+- name: "Enable BGP IPv4 address family"
+  sonic_bgp_af:
+    config:
+      - bgp_as: "{{bgp_asn}}"
+        address_family:
+          afis:
+          - afi: ipv4
+            safi: unicast
+            max_path: 
+              ebgp: 64
+            redistribute:
+              - protocol: connected
+
+- name: "Enable BGP peer group and neighborship in uplinks"
+  sonic_bgp_neighbors:
+    config:
+      - bgp_as: "{{bgp_asn}}"
+        peer_group:
+        - name: SPINE
+          remote_as:
+            peer_type: external
+          capability:
+            extended_nexthop: true
+          address_family:
+            afis:
+              - afi: ipv4
+                safi: unicast
+                activate: true
+                allowas_in:
+                  value: 1
+  when: "'leaf' in group_names"                  
+
+- name: "Associate configured peer-group to uplink peers"
+  sonic_bgp_neighbors:
+    config:
+      - bgp_as: "{{bgp_asn}}"
+        neighbors:
+          - neighbor: '{{item}}'
+            peer_group: SPINE
+  loop: "{{ uplinks }}"
+  when: "'leaf' in group_names"          
+
+- name: "Enable BGP peer group and neighborship in downlinks"
+  sonic_bgp_neighbors:
+    config:
+      - bgp_as: "{{bgp_asn}}"
+        peer_group:
+        - name: LEAF
+          remote_as:
+            peer_type: external
+          capability:
+            extended_nexthop: true
+          address_family:
+            afis:
+              - afi: ipv4
+                safi: unicast
+                activate: true
+  when: "'spine' in group_names"                  
+
+- name: "Associate configured peer-group to downlink peers"
+  sonic_bgp_neighbors:
+    config:
+      - bgp_as: "{{bgp_asn}}"
+        neighbors:
+          - neighbor: '{{item}}'
+            peer_group: LEAF
+  loop: "{{ downlinks }}"
+  when: "'spine' in group_names"          

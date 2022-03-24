@@ -1,7 +1,21 @@
 ---
-- name: Configure common parameters of the fabric
-  hosts: fabric
+# - name: Configure common parameters of the Clos fabric
+#   hosts: fabric
+#   gather_facts: False
+#   connection: httpapi
+#   roles: 
+#     - common
+
+- name: Configure Leaf devices specific parameters
+  hosts: leaf
   gather_facts: False
   connection: httpapi
   roles: 
-    - common
+    - underlay
+
+- name: Configure Spine devices specific parameters
+  hosts: spine
+  gather_facts: False
+  connection: httpapi
+  roles: 
+    - underlay

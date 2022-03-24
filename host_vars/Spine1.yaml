@@ -1,1 +1,13 @@
 hostname        : 'Spine1'
+bgp_asn         : '65600'      
+
+loopbacks:
+  - name: Loopback0
+    ip: '10.2.1.1'
+    description: 'BGP Router ID'
+ 
+downlinks:
+  - Ethernet0
+  - Ethernet1
+  - Ethernet2
+  - Ethernet3  
