@@ -5,6 +5,7 @@ loopbacks:
   - name: Loopback0
     ip: '10.1.1.1'
     description: 'BGP Router ID'
+    mlag_peer: '10.1.1.2'
   - name: Loopback1
     ip: '172.16.1.1'
     description: 'VTEP IP'   

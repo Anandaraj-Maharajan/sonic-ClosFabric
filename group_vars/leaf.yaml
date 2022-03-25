@@ -1,0 +1,31 @@
+anycast_mac_address       : 00:00:00:11:22:33
+
+breakout_ports            : []    # provide the ports in list if any within []
+breakout_mode             : 4x10G
+
+server_ports:
+  - name: 'Ethernet2'
+    lag: 'Portchannel2'
+  - name: 'Ethernet3'
+    lag: 'Portchannel3'
+  - name: 'Ethernet4'
+    lag: 'Portchannel4'
+
+mclag:
+  domain: 1
+  peer_lag: 'Portchannel100'
+  peer_ports: ['Ethernet8']
+
+vlan_vni_map:
+  - svi: 101
+    name: Vlan101
+    vni: 100101
+    gwip: 10.1.101.1/24
+  - svi: 102
+    name: Vlan102
+    vni: 100102
+    gwip: 10.1.102.1/24
+  - svi: 103
+    name: Vlan103
+    vni: 100103
+    gwip: 10.1.103.1/24

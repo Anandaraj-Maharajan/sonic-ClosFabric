@@ -11,11 +11,12 @@
   gather_facts: False
   connection: httpapi
   roles: 
-    - underlay
+    # - underlay
+    - mclag
 
-- name: Configure Spine devices specific parameters
-  hosts: spine
-  gather_facts: False
-  connection: httpapi
-  roles: 
-    - underlay
+# - name: Configure Spine devices specific parameters
+#   hosts: spine
+#   gather_facts: False
+#   connection: httpapi
+#   roles: 
+#     - underlay
