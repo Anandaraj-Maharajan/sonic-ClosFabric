@@ -1,0 +1,38 @@
+---
+# tasks file for overlay
+- name: "Enable BGP l2vpn address family to advertise VNIs"
+  sonic_bgp_af:
+    config:
+      - bgp_as: "{{bgp_asn}}"
+        address_family:
+          afis:
+          - afi: l2vpn
+            safi: evpn
+            advertise_all_vni: True
+  when: "'leaf' in group_names"
+
+- name: "Enable BGP peer group to advertise l2vpn capability"
+  sonic_bgp_neighbors:
+    config:
+      - bgp_as: "{{bgp_asn}}"
+        peer_group:
+        - name: SPINE
+          address_family:
+            afis:
+              - afi: l2vpn
+                safi: evpn
+                activate: true
+  when: "'leaf' in group_names"  
+
+- name: "Enable BGP peer group to advertise l2vpn capability"
+  sonic_bgp_neighbors:
+    config:
+      - bgp_as: "{{bgp_asn}}"
+        peer_group:
+        - name: LEAF
+          address_family:
+            afis:
+              - afi: l2vpn
+                safi: evpn
+                activate: true
+  when: "'spine' in group_names"  
