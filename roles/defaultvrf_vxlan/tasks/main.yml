@@ -1,0 +1,12 @@
+---
+# tasks file for defaultvrf_vxlan
+- name: "Vxlan configuration in default VRF"
+  sonic_vxlans:
+    config:
+      - name: "{{vtep['name']}}"
+        evpn_nvo: "{{vtep['nvo']}}"
+        source_ip: "{{loopbacks[1]['ip']}}"
+        vlan_map:
+          - vni: "{{item['vni']}}"
+            vlan: "{{item['svi']}}"
+  loop: "{{vlan_vni_map}}"            

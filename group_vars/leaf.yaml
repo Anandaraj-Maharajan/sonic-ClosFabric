@@ -29,3 +29,7 @@ vlan_vni_map:
     name: Vlan103
     vni: 100103
     gwip: 10.1.103.1/24
+
+vtep:
+  name: vtepdef
+  nvo: nvo-def
