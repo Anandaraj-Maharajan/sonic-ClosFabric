@@ -1,14 +1,24 @@
-Leaf1A  ansible_host=192.168.1.101
-Leaf1B  ansible_host=192.168.1.102
+Leaf1A    ansible_host=192.168.1.101
+Leaf1B    ansible_host=192.168.1.102
+BLeaf1A   ansible_host=192.168.1.104
+BLeaf1B   ansible_host=192.168.1.105
 
-Spine1  ansible_host=192.168.1.103
+Spine1    ansible_host=192.168.1.103
+Spine2    ansible_host=192.168.1.106
 
 [leaf]
 Leaf1A
 Leaf1B
+BLeaf1A
+BLeaf1B
+
+[borderleaf]
+BLeaf1A
+BLeaf1B
 
 [spine]
 Spine1
+Spine2
 
 [fabric:children]
 leaf

@@ -16,19 +16,25 @@ mclag:
   peer_lag: 'Portchannel100'
   peer_ports: ['Ethernet8']
 
-vlan_vni_map:
-  - svi: 101
-    name: Vlan101
-    vni: 100101
-    gwip: 10.1.101.1/24
-  - svi: 102
-    name: Vlan102
-    vni: 100102
-    gwip: 10.1.102.1/24
-  - svi: 103
-    name: Vlan103
-    vni: 100103
-    gwip: 10.1.103.1/24
+tenant1_map:
+  vlan_vni:
+    - svi: 101
+      name: Vlan101
+      vni: 100101
+      gwip: 10.1.101.1/24
+    - svi: 102
+      name: Vlan102
+      vni: 100102
+      gwip: 10.1.102.1/24
+    - svi: 103
+      name: Vlan103
+      vni: 100103
+      gwip: 10.1.103.1/24
+  vrf_vni:
+    name: Vrf-tenant1
+    svi: 100
+    svi_name: Vlan100
+    vni: 999001
 
 vtep:
   name: vtepdef

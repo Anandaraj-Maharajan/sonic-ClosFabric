@@ -14,7 +14,7 @@
     - underlay
     - mclag
     - overlay
-    - defaultvrf_vxlan
+    - tenant1_vxlan
 
 - name: Configure Spine devices specific parameters
   hosts: spine

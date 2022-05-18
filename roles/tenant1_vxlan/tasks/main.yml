@@ -1,0 +1,90 @@
+---
+# tasks file for tenant1_vxlan
+
+- name: Configure Vlans for the server ports for tenant
+  sonic_vlans:
+    config:
+      - vlan_id: "{{item['svi']}}"
+  loop: "{{ tenant1_map.vlan_vni }}"
+
+- name: Configure vlan to the VRF of the tenant
+  sonic_vrfs:
+    config:
+      - name: "{{tenant1_map.vrf_vni.name}}"
+        members:
+          interfaces:
+            - name: "{{item['name']}}"
+  loop: "{{ tenant1_map.vlan_vni }}"
+
+- name: Configure Vlans for VRF
+  sonic_vlans:
+    config:
+      - vlan_id: "{{ tenant1_map.vrf_vni.svi }}"
+  
+- name: Configure dummy VRF vlan to the VRF of the tenant
+  sonic_vrfs:
+    config:
+      - name: "{{tenant1_map.vrf_vni.name}}"
+        members:
+          interfaces:
+            - name: "{{ tenant1_map.vrf_vni.svi_name }}"
+
+- name: Configure vlan to the VRF of the tenant
+  sonic_vrfs:
+    config:
+      - name: "{{tenant1_map.vrf_vni.name}}"
+        members:
+          interfaces:
+            - name: "{{item['name']}}"
+  loop: "{{ tenant1_map.vlan_vni }}"  
+
+- name: Associate server ports to Vlans
+  sonic_l2_interfaces:
+    config:
+      - name: "{{item.0['lag']}}"
+        access:
+          vlan: "{{item.1['svi']}}"
+  with_together:
+    - "{{server_ports}}"
+    - "{{tenant1_map.vlan_vni}}"
+
+- name: Enable anycast address & configure anycast mac 
+  sonic_system:
+    config:
+      anycast_address:
+        ipv4: true
+        mac_address: '{{anycast_mac_address}}'
+
+- name: Configure anycast ip address on leaf 
+  sonic_l3_interfaces:
+    config:
+      - name: "{{item['name']}}"
+        ipv4:
+          anycast_addresses: 
+            - "{{item['gwip']}}"
+  loop: "{{ tenant1_map.vlan_vni }}"  
+
+- name: "Create vxlan interface to map vlan to vni"
+  sonic_vxlans:
+    config:
+      - name: "{{vtep['name']}}"
+        evpn_nvo: "{{vtep['nvo']}}"
+        source_ip: "{{loopbacks[1]['ip']}}"
+        vlan_map:
+          - vni: "{{item['vni']}}"
+            vlan: "{{item['svi']}}"
+  loop: "{{tenant1_map.vlan_vni}}"        
+
+- name: "Map vrf to vni"
+  sonic_vxlans:
+    config:
+      - name: "{{vtep['name']}}"
+        evpn_nvo: "{{vtep['nvo']}}"
+        source_ip: "{{loopbacks[1]['ip']}}"
+        vlan_map:
+          - vni: "{{tenant1_map.vrf_vni.vni}}"
+            vlan: "{{tenant1_map.vrf_vni.svi}}"
+        vrf_map:
+          - vni: "{{tenant1_map.vrf_vni.vni}}"
+            vrf: "{{tenant1_map.vrf_vni.name}}"
+  loop: "{{tenant1_map.vlan_vni}}"        

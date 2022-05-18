@@ -1,0 +1,16 @@
+hostname        : 'BLeaf1A'
+bgp_asn         : '65501'      
+
+loopbacks:
+  - name: Loopback0
+    ip: '10.1.1.3'
+    description: 'BGP Router ID'
+    mlag_peer: '10.1.1.4'
+  - name: Loopback1
+    ip: '172.16.1.3'
+    description: 'VTEP IP'   
+
+uplinks:
+  - Ethernet0
+  - Ethernet1
+
