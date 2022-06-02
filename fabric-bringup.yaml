@@ -15,6 +15,7 @@
     - mclag
     - overlay
     - tenant1_vxlan
+    - tenant2_vxlan
 
 - name: Configure Spine devices specific parameters
   hosts: spine

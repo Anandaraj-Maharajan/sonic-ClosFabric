@@ -32,7 +32,7 @@
           interfaces:
             - member: "{{ item['name'] }}"
         mode: static
-  loop: "{{server_ports}}"               
+  loop: "{{server_ports}}" 
 
 - name: Associate MCLAG peer ports to port channel
   sonic_lag_interfaces:
@@ -56,5 +56,5 @@
       members:
         portchannels:
           - lag: "{{item['lag']}}"
-  loop: "{{server_ports}}"    
+  loop: "{{server_ports}}" 
 

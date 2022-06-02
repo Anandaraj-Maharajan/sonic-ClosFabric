@@ -10,6 +10,22 @@ server_ports:
     lag: 'Portchannel3'
   - name: 'Ethernet4'
     lag: 'Portchannel4'
+  - name: 'Ethernet5'
+    lag: 'Portchannel5'
+  - name: 'Ethernet6'
+    lag: 'Portchannel6'
+  - name: 'Ethernet7'
+    lag: 'Portchannel7'
+
+tenant1_ports:
+  - lag: 'Portchannel2'
+  - lag: 'Portchannel3'
+  - lag: 'Portchannel4'
+
+tenant2_ports:
+  - lag: 'Portchannel5'
+  - lag: 'Portchannel6'
+  - lag: 'Portchannel7'
 
 mclag:
   domain: 1
@@ -35,6 +51,26 @@ tenant1_map:
     svi: 100
     svi_name: Vlan100
     vni: 999001
+
+tenant2_map:
+  vlan_vni:
+    - svi: 201
+      name: Vlan201
+      vni: 100201
+      gwip: 10.2.101.1/24
+    - svi: 202
+      name: Vlan202
+      vni: 100202
+      gwip: 10.2.102.1/24
+    - svi: 303
+      name: Vlan303
+      vni: 100203
+      gwip: 10.2.103.1/24
+  vrf_vni:
+    name: Vrf-tenant2
+    svi: 200
+    svi_name: Vlan200
+    vni: 999002
 
 vtep:
   name: vtepdef
