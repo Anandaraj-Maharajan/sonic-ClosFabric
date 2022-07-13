@@ -21,13 +21,20 @@
     config:
       - vlan_id: "{{ tenant2_map.vrf_vni.svi }}"
   
-- name: Configure dummy VRF vlan to the VRF of the tenant
+- name: Configure L3 VNI vlan to the VRF of the tenant
   sonic_vrfs:
     config:
       - name: "{{tenant2_map.vrf_vni.name}}"
         members:
           interfaces:
             - name: "{{ tenant2_map.vrf_vni.svi_name }}"
+
+- name: Enable IPv6 link local in the L3 VNI
+  sonic_l3_interfaces:
+    config:
+      - name: "{{ tenant2_map.vrf_vni.svi_name }}"
+        ipv6:
+          enabled: true  
 
 - name: Configure vlan to the VRF of the tenant
   sonic_vrfs:
@@ -75,7 +82,7 @@
             vlan: "{{item['svi']}}"
   loop: "{{tenant2_map.vlan_vni}}"        
 
-- name: "Map vrf to vni"
+- name: "Map vrf to vni to enable symmetric IRB"
   sonic_vxlans:
     config:
       - name: "{{vtep['name']}}"
@@ -87,4 +94,30 @@
         vrf_map:
           - vni: "{{tenant2_map.vrf_vni.vni}}"
             vrf: "{{tenant2_map.vrf_vni.name}}"
-  loop: "{{tenant2_map.vlan_vni}}"        
+  loop: "{{tenant2_map.vlan_vni}}"   
+
+- name: "Enable BGP in the VRF"
+  sonic_bgp:
+    config:
+      - bgp_as: "{{bgp_asn}}"
+        router_id: "{{loopbacks[0]['ip']}}"
+        log_neighbor_changes: False
+        vrf_name: "{{tenant1_map.vrf_vni.name}}"
+
+- name: "Advertise IPv4 routes in the VRF"
+  sonic_bgp_af:
+    config:
+      - bgp_as: "{{bgp_asn}}"
+        vrf_name: "{{tenant1_map.vrf_vni.name}}"
+        address_family:
+          afis:
+          - afi: ipv4
+            safi: unicast
+            redistribute:
+              - protocol: connected
+          - afi: l2vpn
+            safi: evpn
+            advertise_prefix:
+              - afi: ipv4
+                safi: unicast
+                
