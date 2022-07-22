@@ -102,13 +102,13 @@
       - bgp_as: "{{bgp_asn}}"
         router_id: "{{loopbacks[0]['ip']}}"
         log_neighbor_changes: False
-        vrf_name: "{{tenant1_map.vrf_vni.name}}"
+        vrf_name: "{{tenant2_map.vrf_vni.name}}"
 
 - name: "Advertise IPv4 routes in the VRF"
   sonic_bgp_af:
     config:
       - bgp_as: "{{bgp_asn}}"
-        vrf_name: "{{tenant1_map.vrf_vni.name}}"
+        vrf_name: "{{tenant2_map.vrf_vni.name}}"
         address_family:
           afis:
           - afi: ipv4
@@ -120,4 +120,14 @@
             advertise_prefix:
               - afi: ipv4
                 safi: unicast
+
+- name: "In Border leafs, advertise default route to enable North-South communication for the tenant"
+  connection: network_cli
+  sonic_config:
+    commands:
+      - 'default-originate ipv4'
+    parents: 
+      - 'router bgp {{bgp_asn}} vrf {{tenant2_map.vrf_vni.name}}'
+      - 'address-family l2vpn evpn'
+  when: "'borderleaf' in group_names" 
                 

@@ -120,3 +120,13 @@
             advertise_prefix:
               - afi: ipv4
                 safi: unicast
+
+- name: "In Border leafs, advertise default route to enable North-South communication for the tenant"
+  connection: network_cli
+  sonic_config:
+    commands:
+      - 'default-originate ipv4'
+    parents: 
+      - 'router bgp {{bgp_asn}} vrf {{tenant1_map.vrf_vni.name}}'
+      - 'address-family l2vpn evpn'
+  when: "'borderleaf' in group_names" 
