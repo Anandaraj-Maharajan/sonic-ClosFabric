@@ -6,21 +6,21 @@
   roles: 
     - common
 
-- name: Configure Leaf devices specific parameters
-  hosts: leaf
-  gather_facts: False
-  connection: httpapi
-  roles: 
-    - underlay
-    - mclag
-    - overlay
-    - tenant1_vxlan
-    - tenant2_vxlan
+# - name: Configure Leaf devices specific parameters
+#   hosts: leaf
+#   gather_facts: False
+#   connection: httpapi
+#   roles: 
+#     - underlay
+#     - mclag
+#     - overlay
+#     - tenant1_vxlan
+#     - tenant2_vxlan
 
-- name: Configure Spine devices specific parameters
-  hosts: spine
-  gather_facts: False
-  connection: httpapi
-  roles: 
-    - underlay
-    - overlay
+# - name: Configure Spine devices specific parameters
+#   hosts: spine
+#   gather_facts: False
+#   connection: httpapi
+#   roles: 
+#     - underlay
+#     - overlay
