@@ -10,7 +10,7 @@
   hosts: leaf
   gather_facts: False
   connection: httpapi
-  roles: 
+  roles:
     - underlay
     - mclag
     - overlay
@@ -21,6 +21,6 @@
   hosts: spine
   gather_facts: False
   connection: httpapi
-  roles: 
+  roles:
     - underlay
     - overlay
