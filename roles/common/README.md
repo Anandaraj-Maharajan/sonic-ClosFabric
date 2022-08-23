@@ -1,7 +1,7 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+List of commands that are applicable for all the devices irrespective of the location in the clos topology
 
 Requirements
 ------------
